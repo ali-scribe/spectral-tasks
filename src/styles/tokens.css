@@ -1,0 +1,86 @@
+/*
+ * Design tokens for Spectral Tasks.
+ *
+ * Colors are the exact approved palette from design.md (the accessibility
+ * contrast table). Ratios are verified by a unit test (tokens.contrast.test.ts).
+ * Do not change these values without updating design.md and the contrast test.
+ *
+ * Motion tokens follow the approved animation spec: CSS-only, at most ~1.2s,
+ * reduced-motion-safe. They are defined once here so later tasks (ghost, manor,
+ * responsive) draw from a single source.
+ */
+
+:root {
+  /* ---- Color palette (design.md contrast table) ---- */
+  --bg: #120e1a; /* page background */
+  --surface: #1d1729; /* cards, form */
+  --text: #ece6f5; /* body text (~15:1 on --bg) */
+  --text-muted: #b0a6c4; /* secondary text (~8:1 on --bg) */
+  --accent: #c4a8ff; /* links, primary buttons (dark text on it) */
+  --danger: #ff9a9a; /* overdue label and delete */
+  --focus: #ffd479; /* focus ring */
+  --border: #7a6c96; /* input and component boundaries (>= 3:1) */
+
+  /* Dark text used on light accent/danger/focus fills, so filled controls keep
+     strong contrast. This near-black is the same family as --bg. */
+  --on-accent: #1a1326;
+
+  /* A slightly raised surface for hover states, kept within the dark family. */
+  --surface-raised: #272036;
+
+  /* ---- Typography ----
+     The approved design names a display/body pairing but no specific font and
+     forbids fetching fonts at runtime, so these are self-contained system
+     stacks: a serif display face for headings and a readable sans for body.
+     Hierarchy comes from size and weight, not a downloaded font. */
+  --font-display: ui-serif, Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Modular type scale (rem so 200% zoom reflows). */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+
+  --line-body: 1.55; /* comfortable reading line height */
+  --line-tight: 1.2; /* headings */
+  --measure: 65ch; /* comfortable line length cap for prose */
+
+  /* ---- Spacing scale ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  /* ---- Radius and depth ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.45);
+
+  /* ---- Focus ring (never removed; design a11y) ---- */
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+
+  /* ---- Touch target minimum (AC-RESP-01.5) ---- */
+  --touch-target: 44px;
+
+  /* ---- Layout ---- */
+  --layout-max: 1200px;
+  --breakpoint-md: 768px;
+
+  /* ---- Motion tokens (CSS-only; reduced-motion override in motion.css) ----
+     Kept short per AC-A11Y-02.5 (<= ~1.2s, no strobing). "Lit things in the
+     dark" uses a gentle overshoot easing so reactions feel alive, not linear. */
+  --dur-fast: 120ms;
+  --dur-base: 220ms;
+  --dur-slow: 420ms;
+  --dur-reaction: 1100ms; /* ghost/manor reaction, within the 1.2s cap */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1); /* gentle spring-like overshoot */
+  --stagger-step: 45ms; /* list/window stagger delay step */
+}

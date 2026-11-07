@@ -1,0 +1,106 @@
+/*
+ * Manor illustration styling (REQ-MANOR-01). The inline SVG keeps every layer
+ * in the DOM; this stylesheet decides which layers are visible and recolors the
+ * scene per stage, so each stage looks visibly different and stage 0 is a
+ * ruined, dark manor. All motion lives in motion.css and is reduced-motion safe.
+ */
+
+.manor {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+
+  /* Default (stage 0, Abandoned): dark, cold palette. */
+  --manor-sky: #0c0914;
+  --manor-fog: rgba(176, 166, 196, 0.12);
+  --manor-moon: #4a4360;
+  --manor-ground: #16111f;
+  --manor-garden: #2c5038;
+  --manor-wall-ruined: #241d33;
+  --manor-wall: #2a2340;
+  --manor-roof: #1d1730;
+  --manor-window-dark: #0a0710;
+  --manor-window-lit: #ffd479;
+  --manor-door: #3a2f1d;
+  --manor-lantern: #ffb347;
+  --manor-sparkle: #c4a8ff;
+}
+
+/* Layers are hidden until the stage reaches their minimum. */
+.layer--minStage-1,
+.layer--minStage-2,
+.layer--minStage-3,
+.layer--minStage-4,
+.layer--minStage-5 {
+  display: none;
+}
+
+.manor--stage-1 .layer--minStage-1,
+.manor--stage-2 .layer--minStage-1,
+.manor--stage-2 .layer--minStage-2,
+.manor--stage-3 .layer--minStage-1,
+.manor--stage-3 .layer--minStage-2,
+.manor--stage-3 .layer--minStage-3,
+.manor--stage-4 .layer--minStage-1,
+.manor--stage-4 .layer--minStage-2,
+.manor--stage-4 .layer--minStage-3,
+.manor--stage-4 .layer--minStage-4,
+.manor--stage-5 .layer--minStage-1,
+.manor--stage-5 .layer--minStage-2,
+.manor--stage-5 .layer--minStage-3,
+.manor--stage-5 .layer--minStage-4,
+.manor--stage-5 .layer--minStage-5 {
+  display: block;
+}
+
+/* When intact walls appear (stage 2+), hide the ruined walls and dark windows
+   they replace so the manor reads as restored. */
+.manor--stage-2 .layer--walls-ruined,
+.manor--stage-3 .layer--walls-ruined,
+.manor--stage-4 .layer--walls-ruined,
+.manor--stage-5 .layer--walls-ruined {
+  display: none;
+}
+
+.manor--stage-2 .layer--windows,
+.manor--stage-3 .layer--windows,
+.manor--stage-4 .layer--windows,
+.manor--stage-5 .layer--windows {
+  /* Dark window sockets stay as the base; lit windows draw over them. */
+  opacity: 1;
+}
+
+/* Stage recoloring: the scene warms and brightens as it restores. */
+.manor--stage-1 {
+  --manor-sky: #100b1c;
+  --manor-moon: #6b6388;
+}
+
+.manor--stage-2 {
+  --manor-sky: #140e22;
+  --manor-moon: #8a7fb0;
+  --manor-ground: #1b1526;
+}
+
+.manor--stage-3 {
+  --manor-sky: #181028;
+  --manor-moon: #b0a6d6;
+  --manor-wall: #332a4d;
+}
+
+.manor--stage-4 {
+  --manor-sky: #1d1430;
+  --manor-moon: #d6cdf2;
+  --manor-wall: #3a3058;
+  --manor-ground: #1f1a2c;
+}
+
+.manor--stage-5 {
+  --manor-sky: #241a3c;
+  --manor-moon: #f2ecff;
+  --manor-wall: #433766;
+  --manor-window-lit: #ffe6a8;
+}

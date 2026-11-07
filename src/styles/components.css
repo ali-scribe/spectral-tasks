@@ -1,0 +1,433 @@
+/*
+ * Component styles for the task form and task list (Task 9). Uses the design
+ * tokens only; every interactive control has hover, active, disabled and the
+ * global focus-visible states.
+ */
+
+/* ---- Panels ---- */
+.panel {
+  padding: var(--space-5);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-5);
+}
+
+.panel > h2 {
+  margin-top: 0;
+}
+
+.task-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Form fields ---- */
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.field label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.field input,
+.field textarea,
+.field select {
+  min-height: var(--touch-target);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  width: 100%;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 4.5rem;
+}
+
+.field input:hover,
+.field textarea:hover,
+.field select:hover {
+  border-color: var(--accent);
+}
+
+.field input[aria-invalid='true'],
+.field textarea[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.field__error {
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.task-form__actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ---- Task list ---- */
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.task-item {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-4);
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.task-item--overdue {
+  border-left-color: var(--danger);
+}
+
+.task-item--completed {
+  opacity: 0.75;
+}
+
+.task-item--completed .task-item__title {
+  text-decoration: line-through;
+}
+
+.task-item__toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  cursor: pointer;
+  min-width: var(--touch-target);
+}
+
+.task-item__toggle input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.task-item__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.task-item__title {
+  margin: 0 0 var(--space-1);
+  font-weight: 600;
+  font-size: var(--text-lg);
+}
+
+.task-item__desc {
+  margin: 0 0 var(--space-2);
+  color: var(--text-muted);
+}
+
+.task-item__meta {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.task-item__meta .meta-label {
+  font-weight: 600;
+}
+
+.task-item__overdue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.task-item__actions {
+  display: flex;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target);
+  min-width: var(--touch-target);
+  background-color: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.icon-btn:hover {
+  background-color: var(--surface-raised);
+  border-color: var(--accent);
+}
+
+.icon-btn:active {
+  transform: translateY(1px);
+}
+
+.icon-btn--danger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* ---- View navigation (Task 10) ---- */
+.task-browser {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.view-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.view-nav__btn {
+  min-height: var(--touch-target);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.view-nav__btn:hover {
+  background-color: var(--surface-raised);
+  color: var(--text);
+}
+
+.view-nav__btn:active {
+  transform: translateY(1px);
+}
+
+.view-nav__btn--current {
+  background-color: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+
+/* ---- Filter bar ---- */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.filter-bar__search {
+  position: relative;
+  flex: 1 1 12rem;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.filter-bar__search-icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.filter-bar__search input {
+  width: 100%;
+  min-height: var(--touch-target);
+  padding: var(--space-2) var(--space-3) var(--space-2) 2.25rem;
+  background-color: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.filter-bar__field select {
+  min-height: var(--touch-target);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.filter-bar__search input:hover,
+.filter-bar__field select:hover {
+  border-color: var(--accent);
+}
+
+.filter-bar__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* ---- Empty state ---- */
+.empty-state {
+  padding: var(--space-5);
+  text-align: center;
+  color: var(--text-muted);
+  background-color: var(--bg);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* ---- Dashboard (Task 11) ---- */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.counts-panel {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 8rem;
+  color: var(--text-muted);
+}
+
+.count__value {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.count__label {
+  font-size: var(--text-sm);
+}
+
+.daily-progress__label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.daily-progress__count {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.daily-progress__bar {
+  width: 100%;
+  height: 12px;
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  background-color: var(--bg);
+}
+
+.daily-progress__bar::-webkit-progress-bar {
+  background-color: var(--bg);
+}
+
+.daily-progress__bar::-webkit-progress-value {
+  background-color: var(--accent);
+}
+
+.daily-progress__bar::-moz-progress-bar {
+  background-color: var(--accent);
+}
+
+.manor-status__stage {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.manor-status__stage-label {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.manor-status__next {
+  margin: var(--space-1) 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* ---- Ghost companion ---- */
+.ghost {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.ghost__message {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* ---- Empty welcome and demo controls ---- */
+.empty-welcome {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.empty-welcome .btn,
+.demo-controls__remove {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}

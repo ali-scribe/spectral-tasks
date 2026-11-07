@@ -1,0 +1,116 @@
+/*
+ * All decorative motion lives here (design, Reduced Motion and Motion Safety).
+ * Animations are CSS-only, at most ~1.2s, with no strobing (no more than three
+ * flashes per second). A single reduced-motion block disables every animation
+ * and transition while messages and pose labels remain visible text, and no
+ * animation blocks or delays any task operation (AC-A11Y-02.3 to .6).
+ */
+
+/* ---- Ghost companion ---- */
+.ghost__figure {
+  color: var(--accent);
+  transition: transform var(--dur-base) var(--ease-emphasized);
+  will-change: transform;
+}
+
+/* Idle: a slow, gentle bob. One cycle ~3s, so well under three flashes/second
+   and visually calm. */
+.ghost--idle .ghost__figure {
+  animation: ghost-bob 3s var(--ease-standard) infinite;
+}
+
+.ghost--summon .ghost__figure {
+  animation: ghost-summon var(--dur-reaction) var(--ease-emphasized) 1;
+}
+
+.ghost--celebrate .ghost__figure {
+  animation: ghost-celebrate var(--dur-reaction) var(--ease-emphasized) 1;
+}
+
+/* The daily-goal pose is the most expressive, but still one cycle, no strobe. */
+.ghost--goal .ghost__figure {
+  animation: ghost-goal var(--dur-reaction) var(--ease-emphasized) 1;
+}
+
+@keyframes ghost-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes ghost-summon {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  60% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes ghost-celebrate {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-10px) rotate(-6deg);
+  }
+  60% {
+    transform: translateY(-4px) rotate(6deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes ghost-goal {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  25% {
+    transform: scale(1.18) translateY(-12px);
+  }
+  55% {
+    transform: scale(1.05) translateY(-4px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ---- Manor transitions ---- */
+.manor .layer {
+  transition: opacity var(--dur-slow) var(--ease-standard);
+}
+
+.fog {
+  animation: fog-drift 12s ease-in-out infinite alternate;
+}
+
+@keyframes fog-drift {
+  from {
+    transform: translateX(-6px);
+  }
+  to {
+    transform: translateX(6px);
+  }
+}
+
+/* ---- Reduced motion: disable all movement, keep content visible. ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

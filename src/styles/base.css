@@ -1,0 +1,133 @@
+/*
+ * Base element styles and global resets. Establishes the dark gothic ground,
+ * readable typography and the never-removed focus ring (design a11y section).
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* rem base; sizes elsewhere use rem so 200% zoom reflows (AC-RESP-01.6). */
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--line-body);
+  min-height: 100vh;
+
+  /*
+   * "Lit things in the dark": an extremely subtle radial glow behind the page,
+   * well below the text layer. Low opacity so it never reduces text contrast
+   * (readability takes priority per the review constraints). Fixed so it reads
+   * as ambient light, not a scrolling texture.
+   */
+  background-image: radial-gradient(
+    1200px 800px at 50% -10%,
+    rgba(196, 168, 255, 0.06),
+    rgba(18, 14, 26, 0) 60%
+  );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: var(--line-tight);
+  margin: 0 0 var(--space-3);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: var(--text-2xl);
+  letter-spacing: 0.01em;
+}
+
+h2 {
+  font-size: var(--text-xl);
+}
+
+h3 {
+  font-size: var(--text-lg);
+}
+
+p {
+  margin: 0 0 var(--space-3);
+  max-width: var(--measure);
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Long, unbroken titles must never force horizontal scroll (AC-RESP-01.2). */
+.wrap-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/*
+ * Global visible focus indicator on every focusable control (AC-A11Y-01.2).
+ * Uses :focus-visible so it shows for keyboard users; never removed.
+ */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+/* For browsers without :focus-visible, keep a focus ring rather than none. */
+:focus {
+  outline: var(--focus-ring-width) solid var(--focus);
+  outline-offset: var(--focus-ring-offset);
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Base control styling shared by buttons, inputs and selects. */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: var(--text-base);
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Visually hidden content that remains available to assistive technology. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

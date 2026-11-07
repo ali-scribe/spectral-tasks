@@ -1,0 +1,280 @@
+/*
+ * Layout skeleton and shell-component styles.
+ *
+ * This is the Task 8 skeleton: the page frame, landmarks, skip link, header,
+ * notice bar, live regions and modal. The full responsive composition (grid
+ * columns, sticky left column, 1024x768 criterion, touch targets) is finalized
+ * in Task 13. Mobile-first single column is established here so the shell is
+ * usable at every width now.
+ */
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Skip link (AC-A11Y-01.10): first focusable element, visible on focus. */
+.skip-link {
+  position: absolute;
+  left: var(--space-3);
+  top: -3rem;
+  z-index: 100;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--accent);
+  color: var(--on-accent);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top var(--dur-fast) var(--ease-standard);
+}
+
+.skip-link:focus {
+  top: var(--space-3);
+}
+
+/* ---- Header (AC-A11Y-01.7). */
+.app-header {
+  padding: var(--space-4) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header h1 {
+  margin: 0;
+}
+
+.app-header .app-tagline {
+  margin: var(--space-1) 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* ---- Main content region. */
+.app-main {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: var(--layout-max);
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: grid;
+  grid-template-columns: 1fr; /* mobile-first single column */
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.app-main:focus {
+  /* #main is programmatically focusable (tabIndex=-1) for the skip link; do
+     not show an outline when focused this way. */
+  outline: none;
+}
+
+/*
+ * Mobile first (below 768 px): a single column. DOM order already matches the
+ * required stacking: header and notices (outside .app-main), then the left
+ * column (Dashboard with a compact manor, then the create form), then the
+ * right column (view nav, filters, list). (AC-RESP-01.3)
+ */
+@media (max-width: 767.98px) {
+  /* Compact manor so the dashboard does not dominate a small screen. */
+  .manor {
+    max-height: 160px;
+  }
+
+  /* 44x44 CSS px minimum touch targets on touch-width viewports
+     (AC-RESP-01.5). */
+  button,
+  select,
+  input,
+  summary {
+    min-height: var(--touch-target);
+  }
+}
+
+/*
+ * 768 px and up: two columns. Left holds the Dashboard and the create form;
+ * right holds the view nav, a one-row filter bar and the task list.
+ * (AC-RESP-01.4, 1024x768 criterion AC-RESP-01.7/.8)
+ */
+@media (min-width: 768px) {
+  .app-main {
+    grid-template-columns: minmax(280px, 380px) 1fr;
+  }
+
+  /*
+   * Keep the left column in view while the (potentially long) task list
+   * scrolls, but only when it fits the viewport height; otherwise it scrolls
+   * with the page. This supports the 1024x768 criterion where the dashboard,
+   * view nav and first task or empty-state are visible without scrolling past
+   * an entire section, while the list itself scrolls normally (AC-RESP-01.8).
+   */
+  .app-main > aside {
+    position: sticky;
+    top: var(--space-4);
+    align-self: start;
+    max-height: calc(100vh - var(--space-5));
+    overflow: auto;
+  }
+}
+
+/* ---- Notice bar (AC-PERS-02.*). */
+.notice-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
+.notice--warning {
+  border-color: var(--focus);
+}
+
+.notice--error {
+  border-color: var(--danger);
+}
+
+.notice__icon {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.notice__text {
+  flex: 1 1 auto;
+  margin: 0;
+}
+
+.notice__dismiss {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  min-height: var(--touch-target);
+  min-width: var(--touch-target);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notice__dismiss:hover {
+  background-color: var(--surface-raised);
+}
+
+.notice__dismiss:active {
+  transform: translateY(1px);
+}
+
+/* ---- Error boundary fallback (AC-NFR-01.9). */
+.error-fallback {
+  max-width: 40rem;
+  margin: var(--space-6) auto;
+  padding: var(--space-5);
+  background-color: var(--surface);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-lg);
+}
+
+.error-fallback button {
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  min-height: var(--touch-target);
+}
+
+.error-fallback button:hover {
+  filter: brightness(1.08);
+}
+
+/* ---- Modal / dialog (AC-A11Y-01.4 to .6). */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background-color: rgba(10, 7, 16, 0.72);
+}
+
+.modal {
+  width: 100%;
+  max-width: 32rem;
+  max-height: 90vh;
+  overflow: auto;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: var(--space-5);
+}
+
+.modal__title {
+  margin-top: 0;
+}
+
+.modal__actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  margin-top: var(--space-5);
+  flex-wrap: wrap;
+}
+
+/* Shared button variants used by dialogs. */
+.btn {
+  min-height: var(--touch-target);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background-color: var(--surface-raised);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.btn:hover {
+  background-color: var(--border);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background-color: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.08);
+}
+
+.btn--danger {
+  background-color: transparent;
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.btn--danger:hover {
+  background-color: rgba(255, 154, 154, 0.12);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
