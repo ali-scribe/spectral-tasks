@@ -43,6 +43,60 @@
   gap: var(--space-4);
 }
 
+/* Three short fields: they share a row when there is room, and wrap otherwise. */
+.field-row--triple > .field {
+  flex: 1 1 9rem;
+}
+
+/* ---- More details (native disclosure) ---- */
+.task-form__more > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-target);
+  padding: 0 var(--space-1);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--radius-sm);
+}
+
+.task-form__more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.task-form__more > summary::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+
+.task-form__more[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+.task-form__more > summary:hover {
+  color: var(--text);
+}
+
+.task-form__more-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-top: var(--space-2);
+}
+
+/* On a first visit the create panel is the invitation: it takes the accent edge. */
+.create-panel--invite {
+  border-color: var(--accent);
+}
+
 .field label {
   font-size: var(--text-sm);
   font-weight: 600;
@@ -106,12 +160,11 @@
   padding: var(--space-4);
   background-color: var(--bg);
   border: 1px solid var(--border);
-  border-left: 4px solid var(--border);
   border-radius: var(--radius-md);
 }
 
 .task-item--overdue {
-  border-left-color: var(--danger);
+  border-color: var(--danger);
 }
 
 .task-item--completed {
@@ -134,10 +187,45 @@
 }
 
 .task-item__toggle input {
-  width: 22px;
-  height: 22px;
-  accent-color: var(--accent);
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-content: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  min-height: 0;
+  margin: 0;
+  background-color: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard);
+}
+
+.task-item__toggle input::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  background-color: var(--on-accent);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transition: transform var(--dur-fast) var(--ease-emphasized);
+}
+
+.task-item__toggle:hover input {
+  border-color: var(--accent);
+}
+
+.task-item__toggle input:checked {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.task-item__toggle input:checked::before {
+  transform: scale(1);
 }
 
 .task-item__body {
@@ -256,13 +344,13 @@
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
+  gap: var(--space-2);
   align-items: center;
 }
 
 .filter-bar__search {
   position: relative;
-  flex: 1 1 12rem;
+  flex: 1 1 7rem;
   min-width: 0;
   display: flex;
   align-items: center;
@@ -299,14 +387,27 @@
   border-color: var(--accent);
 }
 
+.filter-bar__field {
+  flex: 0 1 8.75rem;
+  min-width: 0;
+}
+
+.filter-bar__field select {
+  width: 100%;
+}
+
 .filter-bar__clear {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
+  padding-inline: var(--space-2);
+  white-space: nowrap;
 }
 
 /* ---- Empty state ---- */
 .empty-state {
+  max-width: none;
+  margin: 0;
   padding: var(--space-5);
   text-align: center;
   color: var(--text-muted);
@@ -364,7 +465,7 @@
   height: 12px;
   appearance: none;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   overflow: hidden;
   background-color: var(--bg);
 }
@@ -401,20 +502,106 @@
 /* ---- Ghost companion ---- */
 .ghost {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-4);
   padding: var(--space-4);
   background-color: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  text-align: center;
+  text-align: left;
+  /* Height is fixed by the figure (80px) so no message ever resizes the card. */
+  min-height: calc(80px + 2 * var(--space-4));
+}
+
+.ghost__figure {
+  flex: 0 0 auto;
 }
 
 .ghost__message {
+  flex: 1 1 auto;
+  min-width: 0;
   margin: 0;
   color: var(--text-muted);
   font-size: var(--text-sm);
+}
+
+/* Ghost poses. These are static: the pose is visible even when motion is
+   reduced. Idle is the base; each reaction swaps arms, eyes, mouth and extras. */
+.ghost-art {
+  display: block;
+  overflow: visible;
+}
+
+.ghost-art__arm {
+  transition: transform var(--dur-base) var(--ease-emphasized);
+}
+
+.ghost-art__arm--l {
+  transform-origin: 16px 35px;
+}
+
+.ghost-art__arm--r {
+  transform-origin: 48px 35px;
+}
+
+.ghost-art__eyes--happy,
+.ghost-art__mouth--summon,
+.ghost-art__mouth--celebrate,
+.ghost-art__mouth--goal,
+.ghost-art__wisp,
+.ghost-art__sparks,
+.ghost-art__glow {
+  display: none;
+}
+
+/* Summon: arms reach out toward the spirit, eyes wide, a wisp appears. */
+.ghost--summon .ghost-art__arm--l {
+  transform: rotate(75deg);
+}
+.ghost--summon .ghost-art__arm--r {
+  transform: rotate(-75deg);
+}
+.ghost--summon .ghost-art__mouth--idle {
+  display: none;
+}
+.ghost--summon .ghost-art__mouth--summon,
+.ghost--summon .ghost-art__wisp {
+  display: inline;
+}
+
+/* Celebrate: arms up in a V, happy eyes, a smile. */
+.ghost--celebrate .ghost-art__arm--l {
+  transform: rotate(115deg);
+}
+.ghost--celebrate .ghost-art__arm--r {
+  transform: rotate(-115deg);
+}
+.ghost--celebrate .ghost-art__eyes--open,
+.ghost--celebrate .ghost-art__mouth--idle {
+  display: none;
+}
+.ghost--celebrate .ghost-art__eyes--happy,
+.ghost--celebrate .ghost-art__mouth--celebrate {
+  display: inline;
+}
+
+/* Daily goal: arms straight up, a wide grin, warm glow and three sparks. */
+.ghost--goal .ghost-art__arm--l {
+  transform: rotate(138deg);
+}
+.ghost--goal .ghost-art__arm--r {
+  transform: rotate(-138deg);
+}
+.ghost--goal .ghost-art__eyes--open,
+.ghost--goal .ghost-art__mouth--idle {
+  display: none;
+}
+.ghost--goal .ghost-art__eyes--happy,
+.ghost--goal .ghost-art__mouth--goal,
+.ghost--goal .ghost-art__sparks,
+.ghost--goal .ghost-art__glow {
+  display: inline;
 }
 
 /* ---- Empty welcome and demo controls ---- */
@@ -425,9 +612,209 @@
   align-items: flex-start;
 }
 
+.empty-welcome__arrow {
+  transform: rotate(90deg); /* points down to the form on a phone */
+}
+
+@media (min-width: 768px) {
+  .empty-welcome__arrow {
+    transform: none; /* points across to the form beside the dashboard */
+  }
+}
+
 .empty-welcome .btn,
 .demo-controls__remove {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+}
+
+/*
+ * Phone task rows: the checkbox keeps its own column, the body gets the full
+ * remaining width, and the edit/delete buttons drop to a line under it, so a
+ * title wraps to one or two lines instead of three.
+ */
+@media (max-width: 767.98px) {
+  .task-item {
+    display: grid;
+    grid-template-columns: var(--touch-target) minmax(0, 1fr);
+    grid-template-areas:
+      'toggle body'
+      'toggle actions';
+    column-gap: var(--space-3);
+    row-gap: var(--space-1);
+    padding: var(--space-3);
+  }
+
+  .task-item__toggle {
+    grid-area: toggle;
+    align-self: start;
+  }
+
+  .task-item__body {
+    grid-area: body;
+  }
+
+  .task-item__actions {
+    grid-area: actions;
+    justify-content: flex-end;
+  }
+
+  .task-item__title {
+    font-size: var(--text-base);
+  }
+
+  .task-item__meta {
+    gap: 0 var(--space-3);
+  }
+}
+
+/* ---- Spirit released: wisp overlay (motion lives in motion.css) ----
+   Fixed, click-through and out of flow, so it can never shift layout or take
+   a click from a control. Below the modal layer. */
+.release-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.release-fx__ring {
+  position: absolute;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius-md);
+  background-color: rgba(196, 168, 255, 0.1);
+  opacity: 0.9;
+}
+
+.release-fx__ring--goal {
+  border-color: var(--focus);
+  background-color: rgba(255, 212, 121, 0.12);
+}
+
+.release-fx__item {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.release-fx__wisp,
+.release-fx__mote {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+}
+
+.release-fx__wisp {
+  transform: translate(-50%, -50%);
+}
+
+.release-fx__sway {
+  display: block;
+  fill: var(--ghost-wisp);
+  filter: drop-shadow(0 0 5px var(--ghost-wisp));
+}
+
+.release-fx__item--goal .release-fx__sway {
+  fill: var(--ghost-glow);
+  filter: drop-shadow(0 0 7px var(--ghost-glow));
+}
+
+.release-fx__mote {
+  width: 5px;
+  height: 5px;
+  margin: -2px 0 0 -2px;
+  border-radius: var(--radius-pill);
+  background-color: var(--ghost-wisp);
+  opacity: 0;
+}
+
+.release-fx__item--goal .release-fx__mote {
+  background-color: var(--ghost-glow);
+}
+
+/* Reduced motion: nothing travels. The row's place keeps a still highlight
+   until the overlay unmounts (a short timer in ReleaseFx). */
+@media (prefers-reduced-motion: reduce) {
+  .release-fx__wisp,
+  .release-fx__mote {
+    display: none;
+  }
+}
+
+/* Manor beat panes (inside the SVG): invisible until their animation runs. */
+.manor-beat__pane {
+  fill: var(--manor-sparkle);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- Manor stage preview (quiet, read-only) ---- */
+.manor-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin-top: calc(-1 * var(--space-2));
+}
+
+.manor-preview__toggle,
+.manor-preview__back {
+  padding: 0 var(--space-1);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.manor-preview__toggle {
+  min-height: var(--touch-target);
+}
+
+.manor-preview__toggle:hover,
+.manor-preview__back:hover {
+  color: var(--text);
+}
+
+.manor-preview__stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.manor-preview__stage {
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  background-color: var(--bg);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.manor-preview__stage:hover {
+  background-color: var(--surface-raised);
+  color: var(--text);
+}
+
+.manor-preview__stage[aria-pressed='true'] {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.manor-preview__note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.manor-preview__back {
+  min-height: var(--touch-target);
+  color: var(--accent);
 }

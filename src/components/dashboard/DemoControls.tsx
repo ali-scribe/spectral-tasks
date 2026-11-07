@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, Trash2 } from 'lucide-react';
+import { ArrowRight, Sparkles, Trash2 } from 'lucide-react';
 import { useAppState, useAppDispatch, useClock } from '../../state/AppContext.tsx';
 import { createId } from '../../domain/ids.ts';
 import { toLocalDateString } from '../../domain/dates.ts';
@@ -27,6 +27,13 @@ export function DemoControls(): JSX.Element {
     dispatch({ type: 'LOAD_DEMO', tasks: demo });
   };
 
+  // The welcome points at the create form: move focus to its title field
+  // (the form sits beside the dashboard on wide screens and right below it on
+  // phones). Focusing also scrolls it into view.
+  const focusCreateForm = () => {
+    document.getElementById('create-title')?.focus();
+  };
+
   const removeDemo = () => {
     dispatch({ type: 'REMOVE_DEMO' });
     setConfirmingRemove(false);
@@ -37,7 +44,11 @@ export function DemoControls(): JSX.Element {
       {isEmpty && (
         <div className="empty-welcome">
           <p>The manor stands silent. Summon your first spirit to begin its restoration.</p>
-          <button type="button" className="btn btn--primary" onClick={loadDemo}>
+          <button type="button" className="btn btn--primary" onClick={focusCreateForm}>
+            <ArrowRight className="empty-welcome__arrow" size={16} aria-hidden="true" />
+            Summon your first spirit
+          </button>
+          <button type="button" className="btn" onClick={loadDemo}>
             <Sparkles size={16} aria-hidden="true" />
             Load demo data
           </button>

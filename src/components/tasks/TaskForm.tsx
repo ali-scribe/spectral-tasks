@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { CATEGORIES, PRIORITIES, type Task } from '../../domain/types.ts';
 import {
   validateTaskInput,
@@ -24,7 +25,10 @@ interface TaskFormProps {
 }
 
 /** Field order used for focusing the first invalid field (AC-VAL-01.10). */
-const FIELD_ORDER: FieldName[] = ['title', 'description', 'dueDate', 'estimatedMinutes'];
+const FIELD_ORDER: FieldName[] = ['title', 'dueDate', 'description', 'estimatedMinutes'];
+
+/** Fields that live inside the collapsible More details section. */
+const MORE_FIELDS: FieldName[] = ['description', 'estimatedMinutes'];
 
 function toRaw(task?: Task): RawTaskInput {
   return {
@@ -35,6 +39,11 @@ function toRaw(task?: Task): RawTaskInput {
     dueDate: task?.dueDate ?? '',
     estimatedMinutes: task?.estimatedMinutes != null ? String(task.estimatedMinutes) : '',
   };
+}
+
+/** True when the task already has content in the More details fields. */
+function hasMore(task?: Task): boolean {
+  return Boolean(task && (task.description !== '' || task.estimatedMinutes != null));
 }
 
 /**
@@ -53,6 +62,7 @@ export function TaskForm({
 }: TaskFormProps): JSX.Element {
   const [raw, setRaw] = useState<RawTaskInput>(() => toRaw(task));
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [moreOpen, setMoreOpen] = useState<boolean>(() => hasMore(task));
   const titleRef = useRef<HTMLInputElement>(null);
   const fieldRefs = {
     title: titleRef,
@@ -65,6 +75,7 @@ export function TaskForm({
   useEffect(() => {
     setRaw(toRaw(task));
     setErrors({});
+    setMoreOpen(hasMore(task));
   }, [task]);
 
   const fieldId = (name: string) => `${idPrefix}-${name}`;
@@ -90,6 +101,10 @@ export function TaskForm({
       // Focus the first invalid field in DOM order (AC-VAL-01.10).
       const firstInvalid = FIELD_ORDER.find((name) => result.errors[name]);
       if (firstInvalid) {
+        // A field inside a closed More details cannot take focus: open it first.
+        if (MORE_FIELDS.includes(firstInvalid)) {
+          flushSync(() => setMoreOpen(true));
+        }
         fieldRefs[firstInvalid].current?.focus();
       }
       return;
@@ -127,25 +142,7 @@ export function TaskForm({
         )}
       </div>
 
-      <div className="field">
-        <label htmlFor={fieldId('description')}>Description</label>
-        <textarea
-          id={fieldId('description')}
-          ref={fieldRefs.description}
-          value={raw.description}
-          onChange={(e) => update('description', e.target.value)}
-          aria-invalid={invalid('description')}
-          aria-describedby={describedBy('description')}
-          rows={3}
-        />
-        {errors.description && (
-          <p className="field__error" id={errorId('description')}>
-            {errors.description}
-          </p>
-        )}
-      </div>
-
-      <div className="field-row">
+      <div className="field-row field-row--triple">
         <div className="field">
           <label htmlFor={fieldId('category')}>Category</label>
           <select
@@ -175,9 +172,7 @@ export function TaskForm({
             ))}
           </select>
         </div>
-      </div>
 
-      <div className="field-row">
         <div className="field">
           <label htmlFor={fieldId('dueDate')}>Due date</label>
           <input
@@ -195,29 +190,55 @@ export function TaskForm({
             </p>
           )}
         </div>
-
-        <div className="field">
-          <label htmlFor={fieldId('estimatedMinutes')}>Estimated minutes</label>
-          <input
-            id={fieldId('estimatedMinutes')}
-            ref={fieldRefs.estimatedMinutes}
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={1440}
-            value={raw.estimatedMinutes}
-            onChange={(e) => update('estimatedMinutes', e.target.value)}
-            aria-invalid={invalid('estimatedMinutes')}
-            aria-describedby={describedBy('estimatedMinutes')}
-          />
-          {errors.estimatedMinutes && (
-            <p className="field__error" id={errorId('estimatedMinutes')}>
-              {errors.estimatedMinutes}
-            </p>
-          )}
-        </div>
       </div>
 
+      <details
+        className="task-form__more"
+        open={moreOpen}
+        onToggle={(e) => setMoreOpen((e.currentTarget as HTMLDetailsElement).open)}
+      >
+        <summary>More details</summary>
+        <div className="task-form__more-body">
+          <div className="field">
+            <label htmlFor={fieldId('description')}>Description</label>
+            <textarea
+              id={fieldId('description')}
+              ref={fieldRefs.description}
+              value={raw.description}
+              onChange={(e) => update('description', e.target.value)}
+              aria-invalid={invalid('description')}
+              aria-describedby={describedBy('description')}
+              rows={3}
+            />
+            {errors.description && (
+              <p className="field__error" id={errorId('description')}>
+                {errors.description}
+              </p>
+            )}
+          </div>
+
+          <div className="field">
+            <label htmlFor={fieldId('estimatedMinutes')}>Estimated minutes</label>
+            <input
+              id={fieldId('estimatedMinutes')}
+              ref={fieldRefs.estimatedMinutes}
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={1440}
+              value={raw.estimatedMinutes}
+              onChange={(e) => update('estimatedMinutes', e.target.value)}
+              aria-invalid={invalid('estimatedMinutes')}
+              aria-describedby={describedBy('estimatedMinutes')}
+            />
+            {errors.estimatedMinutes && (
+              <p className="field__error" id={errorId('estimatedMinutes')}>
+                {errors.estimatedMinutes}
+              </p>
+            )}
+          </div>
+        </div>
+      </details>
       <div className="task-form__actions">
         <button type="submit" className="btn btn--primary">
           {submitLabel}

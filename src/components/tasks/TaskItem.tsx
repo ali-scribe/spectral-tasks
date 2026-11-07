@@ -24,7 +24,7 @@ function TaskItemBase({ task, today, onToggle, onEdit, onDelete }: TaskItemProps
   const overdue = isOverdue(task, today);
 
   return (
-    <li className={`task-item${completed ? ' task-item--completed' : ''}${overdue ? ' task-item--overdue' : ''}`}>
+    <li data-task-id={task.id} className={`task-item${completed ? ' task-item--completed' : ''}${overdue ? ' task-item--overdue' : ''}`}>
       <label className="task-item__toggle">
         <input
           type="checkbox"

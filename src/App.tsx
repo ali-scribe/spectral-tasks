@@ -10,6 +10,7 @@ import { Dashboard } from './components/dashboard/Dashboard.tsx';
 import { CreateTaskPanel } from './components/tasks/CreateTaskPanel.tsx';
 import { TaskBrowser } from './components/tasks/TaskBrowser.tsx';
 import { TaskFormDialog } from './components/tasks/TaskFormDialog.tsx';
+import { ReleaseFx } from './components/effects/ReleaseFx.tsx';
 
 interface AppProps {
   /** Storage handle for persistence (null when unavailable). */
@@ -43,6 +44,7 @@ export default function App({ storage, loadedSnapshot }: AppProps): JSX.Element 
         </section>
       </main>
       <TaskFormDialog />
+      <ReleaseFx />
     </div>
   );
 }

@@ -1,5 +1,8 @@
+import { useState } from 'react';
+import type { ManorStageId } from '../../domain/types.ts';
 import { ManorView } from './ManorView.tsx';
 import { ManorStatus } from './ManorStatus.tsx';
+import { ManorPreview } from './ManorPreview.tsx';
 import { CountsPanel } from './CountsPanel.tsx';
 import { DailyProgress } from './DailyProgress.tsx';
 import { GhostCompanion } from './GhostCompanion.tsx';
@@ -12,11 +15,15 @@ import { DemoControls } from './DemoControls.tsx';
  * ghost messages reach assistive technology through their live regions.
  */
 export function Dashboard(): JSX.Element {
+  // Local, non-persisted UI state: a stage the visitor is only looking at.
+  const [previewStage, setPreviewStage] = useState<ManorStageId | null>(null);
+
   return (
     <div className="dashboard panel">
       <h2 className="visually-hidden">Manor and progress</h2>
-      <ManorView />
+      <ManorView previewStage={previewStage} />
       <ManorStatus />
+      <ManorPreview previewStage={previewStage} onPreview={setPreviewStage} />
       <CountsPanel />
       <DailyProgress />
       <GhostCompanion />

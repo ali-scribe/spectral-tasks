@@ -60,6 +60,7 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
+  --radius-pill: 999px; /* progress bar and other full-round ends */
   --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.45);
 
   /* ---- Focus ring (never removed; design a11y) ---- */
@@ -83,4 +84,153 @@
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1); /* gentle spring-like overshoot */
   --stagger-step: 45ms; /* list/window stagger delay step */
+  --dur-release: 1000ms; /* spirit-released wisp (within the 1.2s cap) */
+  --dur-release-goal: 1150ms; /* the daily-goal wisp, a touch longer */
+
+  /* ---- Ghost art (the companion's own small palette) ----
+     Pale shroud with a cool shade side; ink matches --on-accent. The glow is the
+     same gold as light in the manor, used only on the daily-goal pose. */
+  --ghost-body: #eee9f8;
+  --ghost-shade: #cbc2e0;
+  --ghost-ink: #1a1326;
+  --ghost-wisp: #c4a8ff; /* the summoned spirit wisp (= --accent) */
+  --ghost-glow: #ffd479;
+  --ghost-idle-bob: 3px;
+}
+
+/*
+ * ---- Manor art tokens (one set per stage) ----
+ * The manor is cold desaturated blue-grey at stage 0 and warms through neutral
+ * grey and dusty rose to amber at stage 5. Silhouette rule: walls and roofs are
+ * always darker than the horizon sky behind them, so the gothic outline reads at
+ * every stage. Stage classes come from ManorView (manor--stage-N); manor.css only
+ * consumes these values.
+ */
+.manor {
+  /* Stage 0, Abandoned: cold, drained, no light. */
+  --manor-sky-top: #0c1018;
+  --manor-sky-bottom: #2b3647;
+  --manor-moon: #6f7e94;
+  --manor-moon-glow: 0;
+  --manor-cloud: #1c2432;
+  --manor-cloud-opacity: 0.85;
+  --manor-fog: rgba(170, 185, 205, 0.2);
+  --manor-ground: #10151b;
+  --manor-wall: #151b24;
+  --manor-wall-shade: #10151c;
+  --manor-roof: #0e131a;
+  --manor-roof-edge: #2a3544;
+  --manor-iron: #2f3a49;
+  --manor-tree: #1a212b;
+  --manor-window-dark: #06080c;
+  --manor-window-lit: #d8bf86;
+  --manor-window-glow: #d8bf86;
+  --manor-door: #1a2029;
+  --manor-lantern: #ffb347;
+  --manor-garden: #2a3a3a;
+  --manor-sparkle: #ffe6a8;
+  --manor-horizon-glow: transparent;
+  --manor-smoke: rgba(190, 200, 215, 0.35);
+}
+
+.manor--stage-1 {
+  /* Awakening: the moon clears, one faint candle in the tower. */
+  --manor-sky-top: #0f141e;
+  --manor-sky-bottom: #323f52;
+  --manor-moon: #9aa8bd;
+  --manor-moon-glow: 0.18;
+  --manor-cloud-opacity: 0.65;
+  --manor-fog: rgba(170, 185, 205, 0.17);
+  --manor-ground: #121820;
+  --manor-wall: #19202b;
+  --manor-wall-shade: #131921;
+  --manor-roof: #10161e;
+  --manor-roof-edge: #34414f;
+  --manor-iron: #3a475a;
+  --manor-tree: #1d2530;
+}
+
+.manor--stage-2 {
+  /* Stirring: walls mended, sky turns neutral grey, first real windows. */
+  --manor-sky-top: #151a26;
+  --manor-sky-bottom: #4a4d58;
+  --manor-moon: #c3c9d6;
+  --manor-moon-glow: 0.24;
+  --manor-cloud-opacity: 0.45;
+  --manor-fog: rgba(190, 192, 202, 0.13);
+  --manor-ground: #151a20;
+  --manor-wall: #1f242e;
+  --manor-wall-shade: #181d26;
+  --manor-roof: #131720;
+  --manor-roof-edge: #444b5a;
+  --manor-iron: #4b5262;
+  --manor-tree: #20262f;
+  --manor-window-lit: #f0c570;
+  --manor-window-glow: #f0c570;
+  --manor-door: #3b2a20;
+}
+
+.manor--stage-3 {
+  /* Illuminated: every window lit, smoke from the chimney, dusty warm grey. */
+  --manor-sky-top: #1a1c28;
+  --manor-sky-bottom: #6a5a58;
+  --manor-moon: #e1ddd6;
+  --manor-moon-glow: 0.28;
+  --manor-cloud-opacity: 0.2;
+  --manor-fog: rgba(210, 192, 182, 0.1);
+  --manor-ground: #191c22;
+  --manor-wall: #272a31;
+  --manor-wall-shade: #1f2229;
+  --manor-roof: #191b22;
+  --manor-roof-edge: #5a5258;
+  --manor-iron: #5c5a64;
+  --manor-tree: #25282e;
+  --manor-window-lit: #ffd479;
+  --manor-window-glow: #ffd479;
+  --manor-door: #4a3322;
+  --manor-horizon-glow: rgba(255, 190, 120, 0.12);
+}
+
+.manor--stage-4 {
+  /* Restored: lanterns by the door, living garden, dusk turns amber. */
+  --manor-sky-top: #20202c;
+  --manor-sky-bottom: #8c6448;
+  --manor-moon: #efe8d8;
+  --manor-moon-glow: 0.3;
+  --manor-cloud-opacity: 0;
+  --manor-fog: rgba(230, 190, 150, 0.08);
+  --manor-ground: #1f1d20;
+  --manor-wall: #332f33;
+  --manor-wall-shade: #29262b;
+  --manor-roof: #231f24;
+  --manor-roof-edge: #75594a;
+  --manor-iron: #6d6064;
+  --manor-tree: #2b2a2c;
+  --manor-window-lit: #ffd98a;
+  --manor-window-glow: #ffd98a;
+  --manor-door: #523724;
+  --manor-garden: #3f5a3c;
+  --manor-horizon-glow: rgba(255, 180, 100, 0.2);
+}
+
+.manor--stage-5 {
+  /* Enchanted: amber horizon, glowing windows, a few drifting lights. */
+  --manor-sky-top: #281f30;
+  --manor-sky-bottom: #b87a40;
+  --manor-moon: #fff1cf;
+  --manor-moon-glow: 0.4;
+  --manor-cloud-opacity: 0;
+  --manor-fog: rgba(255, 210, 150, 0.09);
+  --manor-ground: #2a2220;
+  --manor-wall: #3f342f;
+  --manor-wall-shade: #32292a;
+  --manor-roof: #2e2325;
+  --manor-roof-edge: #94694a;
+  --manor-iron: #806a62;
+  --manor-tree: #352f2c;
+  --manor-window-lit: #ffe6a8;
+  --manor-window-glow: #ffe6a8;
+  --manor-door: #5a3a24;
+  --manor-garden: #4d7046;
+  --manor-horizon-glow: rgba(255, 190, 110, 0.32);
 }

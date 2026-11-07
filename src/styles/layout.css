@@ -9,6 +9,8 @@
  */
 
 .app-shell {
+  /* Inline padding that lines header and notices up with the main column. */
+  --header-inline: max(var(--space-4), calc((100% - var(--layout-max)) / 2 + var(--space-4)));
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,7 +37,8 @@
 
 /* ---- Header (AC-A11Y-01.7). */
 .app-header {
-  padding: var(--space-4) var(--space-4);
+  /* Content aligns with the centered main column on wide screens. */
+  padding: var(--space-4) var(--header-inline);
   border-bottom: 1px solid var(--border);
 }
 
@@ -103,9 +106,7 @@
   /*
    * Keep the left column in view while the (potentially long) task list
    * scrolls, but only when it fits the viewport height; otherwise it scrolls
-   * with the page. This supports the 1024x768 criterion where the dashboard,
-   * view nav and first task or empty-state are visible without scrolling past
-   * an entire section, while the list itself scrolls normally (AC-RESP-01.8).
+   * with the page (AC-RESP-01.8).
    */
   .app-main > aside {
     position: sticky;
@@ -114,14 +115,50 @@
     max-height: calc(100vh - var(--space-5));
     overflow: auto;
   }
-}
 
+  /*
+   * First visit (no tasks yet): the create form moves to the top of the wide
+   * column so the main action is visible on load, even at 1024x768, and the
+   * welcome in the dashboard points at it. The aside only passes its two
+   * children to the grid, which places them by area; the DOM order is the
+   * mobile order and does not change.
+   */
+  .app-main:has(.create-panel--invite) {
+    grid-template-areas:
+      'dash form'
+      'dash list';
+    grid-template-rows: auto 1fr;
+  }
+
+  .app-main:has(.create-panel--invite) > aside {
+    display: contents;
+  }
+
+  .app-main:has(.create-panel--invite) > aside > .panel,
+  .app-main:has(.create-panel--invite) > section {
+    margin-bottom: 0;
+  }
+
+  .app-main:has(.create-panel--invite) > aside > .dashboard {
+    grid-area: dash;
+    align-self: start;
+  }
+
+  .app-main:has(.create-panel--invite) > aside > .create-panel {
+    grid-area: form;
+  }
+
+  .app-main:has(.create-panel--invite) > section {
+    grid-area: list;
+    min-width: 0;
+  }
+}
 /* ---- Notice bar (AC-PERS-02.*). */
 .notice-bar {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding: 0 var(--space-4);
+  padding: 0 var(--header-inline);
   margin-top: var(--space-3);
 }
 

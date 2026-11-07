@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import type { Task } from '../../domain/types.ts';
 import { useAppState, useAppDispatch, useClock } from '../../state/AppContext.tsx';
 import { toLocalDateString } from '../../domain/dates.ts';
-import { getViewTasks, applyFilters, compareActive } from '../../domain/selectors.ts';
+import { getViewTasks, applyFilters, compareActive, getCounts } from '../../domain/selectors.ts';
+import { getManorStage } from '../../domain/manor.ts';
+import { emitRelease } from '../effects/releaseFx.ts';
 import { ViewNav } from './ViewNav.tsx';
 import { FilterBar } from './FilterBar.tsx';
 import { TaskList } from './TaskList.tsx';
@@ -37,6 +39,18 @@ export function TaskBrowser(): JSX.Element {
     if (task.status === 'completed') {
       dispatch({ type: 'REOPEN_TASK', id: task.id });
     } else {
+      // Presentation only: note where the row is (it disappears on completion)
+      // and whether this release lifts the manor a stage, for the wisp and the
+      // window beat. Nothing here changes what is dispatched.
+      const row = [...document.querySelectorAll('[data-task-id]')].find(
+        (el) => el.getAttribute('data-task-id') === task.id,
+      );
+      const box = row?.getBoundingClientRect();
+      const completed = getCounts(tasks).completed;
+      emitRelease(
+        box ? { left: box.left, top: box.top, width: box.width, height: box.height } : null,
+        getManorStage(completed + 1) > getManorStage(completed),
+      );
       dispatch({
         type: 'COMPLETE_TASK',
         id: task.id,

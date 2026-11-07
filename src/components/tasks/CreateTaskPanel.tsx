@@ -1,5 +1,5 @@
 import type { ValidTaskInput } from '../../domain/validation.ts';
-import { useAppDispatch, useClock } from '../../state/AppContext.tsx';
+import { useAppDispatch, useAppState, useClock } from '../../state/AppContext.tsx';
 import { createId } from '../../domain/ids.ts';
 import { TaskForm } from './TaskForm.tsx';
 
@@ -9,6 +9,7 @@ import { TaskForm } from './TaskForm.tsx';
  */
 export function CreateTaskPanel(): JSX.Element {
   const dispatch = useAppDispatch();
+  const { tasks } = useAppState();
   const clock = useClock();
 
   const create = (value: ValidTaskInput) => {
@@ -16,7 +17,10 @@ export function CreateTaskPanel(): JSX.Element {
   };
 
   return (
-    <section className="panel" aria-label="Summon a spirit">
+    <section
+      className={`panel create-panel${tasks.length === 0 ? ' create-panel--invite' : ''}`}
+      aria-label="Summon a spirit"
+    >
       <h2>Summon a spirit</h2>
       <TaskForm onSubmit={create} submitLabel="Summon spirit" resetAfterSubmit idPrefix="create" />
     </section>
