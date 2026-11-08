@@ -142,9 +142,14 @@ Scale: 0.75, 0.875, 1, 1.25, 1.5, 2rem, in rem so 200% zoom reflows.
 
 ## Layout
 
-Mobile first. A single column below 768px (dashboard with a compact manor, then the create form, then the view nav, filters and list). From 768px, two columns: the dashboard and form on the left, sticky when they fit the viewport, the task browser on the right. Content width is capped at 1200px with 1rem page padding.
+Mobile first. A single column below 768px (dashboard, then the create form, then the view nav, filters and list); the DOM order is always this order. The header and notices align with the centered main column on wide screens. Content width is capped at 1200px with 1rem page padding.
 
-Spacing scale is 0.25, 0.5, 0.75, 1, 1.5, 2rem. Touch targets are 44px minimum. The manor is capped at 220px high, and at 160px below 768px. Usable from 320px to 1920px and at 200% zoom.
+- **Phone dashboard (below 768px):** a compact manor (160px), the two counts on one line, the daily goal as one line with its bar, and a smaller ghost card (74px, fixed height so messages never resize it). All words stay visible.
+- **768 to 1023px:** two columns, the dashboard on the left (sticky when it fits the viewport) and the task browser on the right. On a first visit the create form moves to the top of the right column so the main action is visible.
+- **Hero band (1024px and up):** the dashboard becomes a full-width band. The manor spans it edge to edge (height 25vh, 168 to 300px) and its sides dissolve into the sky and ground. Under it, one strip holds the stage and the preview link, the counts and daily goal, and the ghost. The welcome text and the demo button sit over the quiet sky at the left of the manor. Below the band the create form is the left column and the view nav, filters and list are the right column. At 1024x768 the nav and the first task or empty-state message stay in view.
+
+
+Spacing scale is 0.25, 0.5, 0.75, 1, 1.5, 2rem. Touch targets are 44px minimum. Outside the hero band the manor is capped at 220px high (160px below 768px). Usable from 320px to 1920px and at 200% zoom.
 
 ## Elevation & Depth
 
@@ -183,6 +188,7 @@ Gently rounded: 6px on controls and focus rings, 10px on panels, the manor frame
 - Stage 0 ruin: broken roof, snapped spire, boarded openings, neglected fence, clouds. Stage 1 adds the moon and one faint candle. Stage 2 mends the house and lights three windows. Stage 3 lights all six, adds smoke and a door light spill. Stage 4 adds lanterns beside the door, foliage, shrubs. Stage 5 adds sparks, blooms and the strongest horizon glow.
 - Motion: slow mist drift, chimney smoke (stage 3+), sparks twinkle (stage 5). All stop under reduced motion; the scene stays complete as a still.
 
+- **Stage preview:** a quiet "Preview manor stages" link under the stage label opens six buttons (0 to 5, ria-pressed). The chosen stage is shown with "Preview: your real progress is stage N" and a "Back to my manor" link, and "Previewing stage N" is announced politely. It is local, never saved, and never changes counts, the goal or storage.
 - **Spirit released:** completing a task lifts a lilac wisp (about 1s) from where the row was toward the manor, with two faint motes behind it and a soft ring on the row's footprint. If the release raises the manor a stage, its lit windows flare once, left to right. The daily-goal release is a touch bigger and gold. The overlay is fixed, click-through and aria-hidden, and unmounts on animationend. Under reduced motion nothing moves: a still ring marks the row's place for 0.9s and the live-region message remains.
 
 **The Silhouette Rule.** Building shapes are always darker than the sky behind them; light comes only from windows, lanterns and the horizon.

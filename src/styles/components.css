@@ -818,3 +818,152 @@
   min-height: var(--touch-target);
   color: var(--accent);
 }
+
+/* ---- Hero dashboard (1024px and up) ----
+   Manor on top, then one strip: stage and preview, counts and goal, ghost. */
+@media (min-width: 1024px) {
+  .dashboard {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr);
+    position: relative;
+    grid-template-areas:
+      'manor  manor  manor'
+      'status counts ghost'
+      'preview goal  ghost';
+    column-gap: var(--space-5);
+    row-gap: var(--space-2);
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .dashboard > .manor {
+    grid-area: manor;
+    margin-bottom: var(--space-2);
+  }
+  .dashboard > .manor-status {
+    grid-area: status;
+  }
+  .dashboard > .manor-preview {
+    grid-area: preview;
+    margin-top: 0;
+    align-self: start;
+  }
+  .dashboard > .counts-panel {
+    grid-area: counts;
+    flex-wrap: nowrap;
+  }
+  .dashboard > .daily-progress {
+    grid-area: goal;
+  }
+  .dashboard > .ghost {
+    grid-area: ghost;
+    align-self: stretch;
+  }
+  /* The welcome and the demo button sit over the quiet sky at the left of the
+     manor band, where the scene leaves room. The band is tall enough for them. */
+  .dashboard > .demo-controls {
+    position: absolute;
+    top: var(--space-4);
+    left: var(--space-5);
+    z-index: 2;
+    max-width: 20rem;
+  }
+
+  .empty-welcome p {
+    margin: 0;
+    color: var(--text);
+  }
+  .empty-welcome {
+    gap: var(--space-2);
+  }
+  .empty-welcome__arrow {
+    transform: rotate(90deg); /* the form is below the hero */
+  }
+  .demo-controls__remove {
+    background-color: var(--bg);
+  }
+
+  /* A pointer device does not need the 44px touch target. */
+  .manor-preview__toggle,
+  .manor-preview__back {
+    min-height: 32px;
+  }
+
+  /* The ghost card keeps a fixed reserved height (the figure sets it). */
+  .ghost {
+    padding: var(--space-3) var(--space-4);
+    min-height: calc(56px + 2 * var(--space-3));
+  }
+  .ghost-art {
+    width: 45px;
+    height: 56px;
+  }
+}
+
+/* ---- Phone dashboard (below 768px): a tighter first screen ----
+   The two counts share one line, the daily goal is one line with its bar, and
+   the ghost card shrinks. Every word stays visible; nothing is removed. */
+@media (max-width: 767.98px) {
+  .dashboard.panel {
+    padding: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .manor-status__stage {
+    font-size: var(--text-base);
+  }
+
+  .counts-panel {
+    flex-wrap: nowrap;
+    gap: var(--space-3);
+  }
+
+  .count {
+    flex: 0 1 auto;
+    gap: var(--space-1);
+  }
+
+  .count__value {
+    font-size: var(--text-lg);
+  }
+
+  .count__label {
+    font-size: var(--text-xs);
+    line-height: 1.2;
+  }
+
+  .daily-progress {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+  }
+
+  .daily-progress__label {
+    flex: 0 0 auto;
+    gap: var(--space-2);
+    margin: 0;
+  }
+
+  .daily-progress__bar {
+    flex: 1 1 5rem;
+    height: 10px;
+    min-height: 0;
+  }
+
+  .ghost {
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    /* Reserved height: the card never grows or shrinks with its message. */
+    min-height: calc(56px + 2 * var(--space-2));
+  }
+
+  .ghost-art {
+    width: 45px;
+    height: 56px;
+  }
+
+  .manor-preview {
+    margin-top: calc(-1 * var(--space-3));
+  }
+}

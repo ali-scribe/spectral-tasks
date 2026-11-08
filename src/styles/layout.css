@@ -102,7 +102,12 @@
   .app-main {
     grid-template-columns: minmax(280px, 380px) 1fr;
   }
+}
 
+/*
+ * 768 to 1023 px: the dashboard is the left column (original arrangement).
+ */
+@media (min-width: 768px) and (max-width: 1023.98px) {
   /*
    * Keep the left column in view while the (potentially long) task list
    * scrolls, but only when it fits the viewport height; otherwise it scrolls
@@ -118,9 +123,8 @@
 
   /*
    * First visit (no tasks yet): the create form moves to the top of the wide
-   * column so the main action is visible on load, even at 1024x768, and the
-   * welcome in the dashboard points at it. The aside only passes its two
-   * children to the grid, which places them by area; the DOM order is the
+   * column so the main action is visible on load. The aside only passes its
+   * two children to the grid, which places them by area; the DOM order is the
    * mobile order and does not change.
    */
   .app-main:has(.create-panel--invite) {
@@ -149,6 +153,49 @@
   }
 
   .app-main:has(.create-panel--invite) > section {
+    grid-area: list;
+    min-width: 0;
+  }
+}
+
+/*
+ * 1024 px and up: the dashboard becomes a full-width hero band (manor, stage,
+ * counts, daily goal, ghost). Below it the two columns sit side by side: the
+ * create form on the left, the view navigation, filters and list on the right
+ * (AC-RESP-01.4 allows an equivalent arrangement in which both are visible in
+ * the initial viewport; AC-RESP-01.7 is checked at 1024x768). The aside only
+ * passes its two children to the grid; the DOM order stays the mobile order.
+ */
+@media (min-width: 1024px) {
+  .app-main {
+    grid-template-columns: minmax(280px, 380px) 1fr;
+    grid-template-areas:
+      'dash dash'
+      'form list';
+    grid-template-rows: auto 1fr;
+    column-gap: var(--space-5);
+    row-gap: var(--space-4);
+  }
+
+  .app-main > aside {
+    display: contents;
+  }
+
+  .app-main > aside > .panel,
+  .app-main > section {
+    margin-bottom: 0;
+  }
+
+  .app-main > aside > .dashboard {
+    grid-area: dash;
+  }
+
+  .app-main > aside > .create-panel {
+    grid-area: form;
+    align-self: start;
+  }
+
+  .app-main > section {
     grid-area: list;
     min-width: 0;
   }
