@@ -120,6 +120,31 @@
   min-height: 4.5rem;
 }
 
+/* Native date input: a dark color scheme makes the calendar icon light, and the
+   picker button (its own tab stop) gets the same focus ring as every control. */
+.field input[type='date'] {
+  color-scheme: dark;
+}
+
+.field input[type='date']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+.field input[type='date']::-webkit-calendar-picker-indicator:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+/* Chromium focuses the picker button inside the input's shadow DOM, where neither
+   :focus nor :focus-visible match the input and the rule above does not paint.
+   :focus-within does match, so the same focus ring is drawn around the input. */
+.field input[type='date']:focus-within {
+  outline: var(--focus-ring-width) solid var(--focus);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
 .field input:hover,
 .field textarea:hover,
 .field select:hover {
@@ -213,6 +238,22 @@
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
   transform: scale(0);
   transition: transform var(--dur-fast) var(--ease-emphasized);
+}
+
+/* Invisible hit area: the checkbox looks 26px but its click target is 44x44.
+   It sits on the input itself (absolute, so it never shifts layout). */
+.task-item__toggle input {
+  position: relative;
+}
+
+.task-item__toggle input::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  transform: translate(-50%, -50%);
 }
 
 .task-item__toggle:hover input {

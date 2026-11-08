@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Task } from '../../domain/types.ts';
 import { useAppState, useAppDispatch, useClock } from '../../state/AppContext.tsx';
 import { toLocalDateString } from '../../domain/dates.ts';
@@ -22,6 +22,10 @@ export function TaskBrowser(): JSX.Element {
   const dispatch = useAppDispatch();
   const clock = useClock();
   const [pendingDelete, setPendingDelete] = useState<Task | null>(null);
+  // Where keyboard focus goes once a deleted row is gone: a neighbouring row's
+  // checkbox (by task id), or the list heading when no row is left.
+  const [focusAfterDelete, setFocusAfterDelete] = useState<string | 'heading' | null>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   const { view, filters } = ui;
 
@@ -64,15 +68,35 @@ export function TaskBrowser(): JSX.Element {
 
   const confirmDelete = () => {
     if (pendingDelete) {
+      const index = visible.findIndex((t) => t.id === pendingDelete.id);
+      const neighbour = visible[index + 1] ?? visible[index - 1];
+      setFocusAfterDelete(neighbour ? neighbour.id : 'heading');
       dispatch({ type: 'DELETE_TASK', id: pendingDelete.id });
       setPendingDelete(null);
     }
   };
 
+  // Runs after the dialog has closed and the row has been removed.
+  useEffect(() => {
+    if (focusAfterDelete === null || pendingDelete !== null) return;
+    if (focusAfterDelete === 'heading') {
+      headingRef.current?.focus();
+    } else {
+      const row = [...document.querySelectorAll('[data-task-id]')].find(
+        (el) => el.getAttribute('data-task-id') === focusAfterDelete,
+      );
+      const control = row?.querySelector<HTMLElement>('input[type="checkbox"]');
+      (control ?? headingRef.current)?.focus();
+    }
+    setFocusAfterDelete(null);
+  }, [focusAfterDelete, pendingDelete, visible]);
+
   return (
     <div className="task-browser">
       {/* Gives the Spirits region a heading (design: sections have h2 headings). */}
-      <h2 className="visually-hidden">Your spirits</h2>
+      <h2 className="visually-hidden" tabIndex={-1} ref={headingRef}>
+        Your spirits
+      </h2>
       <ViewNav />
       <FilterBar />
 

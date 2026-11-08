@@ -8,6 +8,13 @@ Your tasks are restless spirits haunting an abandoned manor. Release them by com
 
 <img src="docs/images/mobile.png" alt="Spectral Tasks on a phone: compact dashboard, then the summon form" width="260">
 
+## Try it in 60 seconds
+
+1. Open https://spectral-tasks.vercel.app/.
+2. Click **Load demo data** to get a few sample spirits.
+3. Tick three spirits to release them. At three you reach the daily goal and the ghost celebrates.
+4. Click **Preview manor stages** under the stage name and pick 0 to 5 to see all six stages. **Back to my manor** returns to your real progress, which the preview never changes.
+
 ## Features
 
 - **Tasks:** create, edit, delete, complete and reopen. Title is required; description, due date and estimated minutes are optional, plus category and priority.
@@ -39,7 +46,7 @@ Other choices that shaped the code:
 
 ## Tech stack
 
-React, TypeScript, Vite and plain CSS, with design tokens in `src/styles/tokens.css`. Runtime dependencies are only `react`, `react-dom` and `lucide-react`. The manor and ghost are hand-written inline SVG. Tests use Vitest and Testing Library; Playwright is a dev-only tool for design screenshots.
+React, TypeScript, Vite and plain CSS, with design tokens in `src/styles/tokens.css`. Runtime dependencies are only `react`, `react-dom` and `lucide-react`. The manor and ghost are hand-written inline SVG. Tests use Vitest and Testing Library; Playwright is a dev-only tool for design screenshots and browser QA.
 
 ## Run locally
 
@@ -61,6 +68,24 @@ npm run build      # typecheck and production build
 - Text contrast targets are checked by a unit test that reads the color tokens.
 
 Full WCAG conformance has not been verified. It needs manual testing with assistive technology.
+
+## Verification
+
+**Tests.** `npm test` runs the unit, property-based and integration tests once (Vitest, jsdom). jsdom has no layout engine, so layout, focus and visual checks are covered by the browser QA below.
+
+**Automated browser QA.** `scripts/qa/run.mjs` drives the production build with Playwright (`npm run build`, `npm run preview`, then `node scripts/qa/run.mjs`; install the extra browsers with `npx playwright install firefox webkit`). The cross-browser smoke check (load demo data, complete a task, refresh, check persistence and the console) was run on Chromium, Firefox, WebKit and Edge. WebKit is not Safari, and the Chrome and Safari columns of the checklist are not filled in. The results are recorded in [`docs/manual-qa.md`](docs/manual-qa.md), which shows which checks were automated (marked "(auto)") and which are still for a human. No screen-reader testing is recorded there.
+
+**Performance.** Measured on 2026-11-08, production build, 500 tasks, Intel Core i5-8350U laptop (4 cores, 7.9 GB), Windows 11, headless Playwright Chromium 158 (not the stable Chrome channel), no CPU throttling:
+
+| Check | Median | Target |
+|-------|--------|--------|
+| Complete a task (warm, median of 10) | 120 ms | 200 ms |
+| Reopen a task (warm, median of 10) | 64 ms | 200 ms |
+| Edit a task (warm, median of 10) | 88 ms | 200 ms |
+| Delete a task (warm, median of 10) | 104 ms | 200 ms |
+| Initial load to interactive dashboard (cold, median of 5) | 377 ms | 2000 ms |
+
+These were automated, not read from the DevTools Performance panel, and the dashboard counts were not checked after loading each data set. See [`docs/performance.md`](docs/performance.md) for the method, the data sets and the full list of caveats.
 
 ## Known limitations
 

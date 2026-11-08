@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Colors copy the tokens in src/styles/tokens.css (--bg, --ghost-body, --ghost-shade, --ghost-ink). -->
+  <rect width="64" height="64" rx="14" fill="#120e1a"/>
+  <path d="M32 9C21 9 15 18 15 30v22l6-5 5.500 7L32 47l5.500 7 5.500-7 6 5V30C49 18 43 9 32 9Z" fill="#eee9f8"/>
+  <path d="M42 12.500C46 17 49 23 49 30v22l-6-5-3 5 1-18c3-8 3-17 1-23.500Z" fill="#cbc2e0"/>
+  <ellipse cx="26" cy="29" rx="3" ry="4.200" fill="#1a1326"/>
+  <ellipse cx="38" cy="29" rx="3" ry="4.200" fill="#1a1326"/>
+  <path d="M28.500 37.500q3.500 3 7 0" fill="none" stroke="#1a1326" stroke-width="2.200" stroke-linecap="round"/>
+</svg>

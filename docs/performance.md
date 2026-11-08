@@ -1,6 +1,6 @@
 # Performance verification (Requirement 20)
 
-**Status: no measurements have been recorded.** Every result in this document reads "Not yet measured".
+**Status: automated measurements recorded on 2026-11-08 (see section 7 for the environment and deviations from the documented procedure). Rows that could not be measured faithfully read "Not yet measured".**
 
 Spectral Tasks is not described as meeting any performance target until the measured result has been recorded in the tables below (AC-PERF-01.8). The owner runs the measurements; nothing in this repository claims a result.
 
@@ -122,17 +122,22 @@ After 5 runs, take the **median**. Every run in this series is a **cold** load. 
 
 | Field | Value |
 |-------|-------|
-| Date measured | Not yet measured |
-| Git commit of the build | Not yet measured |
-| CPU model | Not yet measured |
-| CPU cores | Not yet measured |
-| Memory | Not yet measured |
-| Operating system | Not yet measured |
-| Exact Chrome version (`chrome://version`) | Not yet measured |
-| Extensions disabled | Not yet measured |
-| CPU throttling | Not yet measured |
-| Power mode | Not yet measured |
-| Notes | Not yet measured |
+| Date measured | 2026-11-08 |
+| Git commit of the build | ce08ac9 (working tree has uncommitted changes to .gitignore and docs/manual-qa.md and an untracked scripts/qa/; src/ unchanged) |
+| CPU model | Intel Core i5-8350U @ 1.70 GHz |
+| CPU cores | 4 physical / 8 logical |
+| Memory | 7.9 GB |
+| Operating system | Windows 11 (NT 10.0.26200) |
+| Exact Chrome version (`chrome://version`) | Not Chrome: Playwright Chromium 158.0.8127.18, headless (chromium_headless_shell), not the stable Chrome channel |
+| Extensions disabled | Yes (fresh Playwright profile, no extensions) |
+| CPU throttling | None |
+| Power mode | Windows "Balanced" scheme; mains/battery state not checked; other applications not closed |
+| Notes | Production build (`npm run build` + `npm run preview`, http://localhost:4173), headless, 1440x900 viewport. Data sets A and B from `npm run perf:data`, loaded via the `.console.js` files. Dashboard counts (section 4 step 5) were NOT checked. Automated with Playwright, not by hand. |
+
+Deviations from the documented procedure (not DevTools Performance panel readings):
+
+- T1: each run used a fresh browser context, data set A reloaded, All Tasks view, middle task (Reopen: the single completed task). Durations are Event Timing API entries (the same input-to-next-paint measure the Interactions track shows), taking the longest entry of the interaction. Event Timing is rounded to 8 ms and only reports interactions of 16 ms or more. The value is not a DevTools timeline reading.
+- T2: each run used a new browser instance. Data set B stored, HTTP cache cleared via CDP `Network.clearBrowserCache` (LocalStorage kept), then reload, with no profiling started. A click on "All Tasks" was issued immediately after the load event. The value is `performance.now()` at the end of the click event's window-level listener (after the app's handler), measured from navigation start. No DevTools trace was taken, and the value depends on when the automation clicks.
 
 ## 8. Results
 
@@ -142,25 +147,25 @@ Per-run values (ms):
 
 | Run | Complete | Reopen | Edit | Delete |
 |-----|----------|--------|------|--------|
-| 1 | Not yet measured | Not yet measured | Not yet measured | Not yet measured |
-| 2 | Not yet measured | Not yet measured | Not yet measured | Not yet measured |
-| 3 | Not yet measured | Not yet measured | Not yet measured | Not yet measured |
-| 4 | Not yet measured | Not yet measured | Not yet measured | Not yet measured |
-| 5 | Not yet measured | Not yet measured | Not yet measured | Not yet measured |
-| 6 | Not yet measured | Not yet measured | Not yet measured | Not yet measured |
-| 7 | Not yet measured | Not yet measured | Not yet measured | Not yet measured |
-| 8 | Not yet measured | Not yet measured | Not yet measured | Not yet measured |
-| 9 | Not yet measured | Not yet measured | Not yet measured | Not yet measured |
-| 10 | Not yet measured | Not yet measured | Not yet measured | Not yet measured |
+| 1 | 144 | 88 | 88 | 96 |
+| 2 | 168 | 88 | 88 | 104 |
+| 3 | 104 | 72 | 88 | 96 |
+| 4 | 120 | 64 | 88 | 96 |
+| 5 | 112 | 64 | 96 | 168 |
+| 6 | 112 | 80 | 96 | 112 |
+| 7 | 136 | 64 | 88 | 104 |
+| 8 | 120 | 56 | 88 | 104 |
+| 9 | 120 | 56 | 88 | 112 |
+| 10 | 112 | 64 | 80 | 104 |
 
 Summary:
 
-| Interaction | Load type | Median of 10 (ms) | Target (ms) | Target verified? |
-|-------------|-----------|-------------------|-------------|------------------|
-| Complete | Warm | Not yet measured | 200 | Not yet measured |
-| Reopen | Warm | Not yet measured | 200 | Not yet measured |
-| Edit | Warm | Not yet measured | 200 | Not yet measured |
-| Delete | Warm | Not yet measured | 200 | Not yet measured |
+| Interaction | Load type | Median of 10 (ms) | Worst (ms) | Target (ms) | Target verified? |
+|-------------|-----------|-------------------|------------|-------------|------------------|
+| Complete | Warm | 120 | 168 | 200 | Met (median 120 ms), with the deviations in section 7 |
+| Reopen | Warm | 64 | 88 | 200 | Met (median 64 ms), with the deviations in section 7 |
+| Edit | Warm | 88 | 96 | 200 | Met (median 88 ms), with the deviations in section 7 |
+| Delete | Warm | 104 | 168 | 200 | Met (median 104 ms), with the deviations in section 7 |
 
 ### 8.2 T2: initial load (cold), data set B, target 2 seconds median of 5
 
@@ -168,18 +173,17 @@ Per-run values (ms, navigation start to first input handled):
 
 | Run | Load type | Value (ms) |
 |-----|-----------|------------|
-| 1 | Cold | Not yet measured |
-| 2 | Cold | Not yet measured |
-| 3 | Cold | Not yet measured |
-| 4 | Cold | Not yet measured |
-| 5 | Cold | Not yet measured |
+| 1 | Cold | 383 |
+| 2 | Cold | 377 |
+| 3 | Cold | 340 |
+| 4 | Cold | 386 |
+| 5 | Cold | 357 |
 
 Summary:
 
-| Series | Load type | Median of 5 (ms) | Target (ms) | Target verified? |
-|--------|-----------|------------------|-------------|------------------|
-| Initial load to interactive dashboard | Cold | Not yet measured | 2000 | Not yet measured |
-
+| Series | Load type | Median of 5 (ms) | Worst (ms) | Target (ms) | Target verified? |
+|--------|-----------|------------------|------------|-------------|------------------|
+| Initial load to interactive dashboard | Cold | 377 | 386 | 2000 | Met (median 377 ms), with the deviations in section 7 |
 ## 9. After recording results
 
 Only once a series has been measured and written into section 8 may the project describe the matching target as met or missed. Until then, no README, report or presentation should state that the app meets a performance target. If a target is missed, record the result as measured and open a separate task to address it. Do not edit the recorded values.
